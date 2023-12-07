@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet author="bartek" id="1">
+        <loadData encoding="UTF-8" file="data/rides.csv" quotchar="&quot;" separator="," tableName="ride">
+            <column name="id" header="id"/>
+            <column name="ride_uuid" header="ride_uuid"/>
+            <column name="driver_node" header="driver_node"/>
+            <column name="start_time" header="start_time"/>
+            <column name="end_time" header="end_time"/>
+            <column name="start_location" header="start_location"/>
+            <column name="end_location" header="end_location"/>
+            <column name="status" header="status"/>
+            <column name="customer_uuid" header="customer_uuid"/>
+            <column name="driver_uuid" header="driver_uuid"/>
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

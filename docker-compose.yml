@@ -1,0 +1,82 @@
+services:
+  postgres:
+    container_name: ride_uberApp_postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: ride
+      POSTGRES_PASSWORD: password
+      PGDATA: /data/postgres
+    volumes:
+      - ride_uberApp_postgres:/data/postgres
+    ports:
+      - "5437:5432"
+    networks:
+      - ride_uberApp_postgres
+    restart: unless-stopped
+
+  pgadmin_ride_uberApp:
+    container_name: pgadmin_ride_uberApp
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+      - pgadmin_ride_uberApp:/var/lib/pgadmin
+    ports:
+      - "5052:80"
+    networks:
+      - ride_uberApp_postgres
+    restart: unless-stopped
+
+  zookeeper_ride:
+    image: zookeeper:3.7.0
+    container_name: zookeeper_ride
+    restart: "no"
+    networks:
+      - kafka-ride-net
+    ports:
+      - "2181:2181"
+
+  kafka_ride:
+    image: obsidiandynamics/kafka
+    container_name: kafka_ride
+    restart: "no"
+    networks:
+      - kafka-ride-net
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER_INTERNAL:PLAINTEXT,DOCKER_EXTERNAL:PLAINTEXT
+      KAFKA_LISTENERS: DOCKER_INTERNAL://:29092,DOCKER_EXTERNAL://:9092
+      KAFKA_ADVERTISED_LISTENERS: DOCKER_INTERNAL://kafka_ride:29092,DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER_INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper_ride:2181"
+      KAFKA_BROKER_ID: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper_ride
+
+  kafdrop_ride:
+    image: obsidiandynamics/kafdrop
+    container_name: kafdrop_ride
+    restart: "no"
+    networks:
+      - kafka-ride-net
+    ports:
+      - "9000:9000"
+    environment:
+      KAFKA_BROKERCONNECT: "kafka_ride:29092"
+    depends_on:
+      - "kafka_ride"
+
+networks:
+  kafka-ride-net:
+    name: kafka-ride-net
+    driver: bridge
+  ride_uberApp_postgres:
+    driver: bridge
+
+volumes:
+  ride_uberApp_postgres:
+  pgadmin_ride_uberApp:

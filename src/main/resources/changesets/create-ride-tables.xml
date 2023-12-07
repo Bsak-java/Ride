@@ -1,0 +1,36 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.24.xsd">
+
+    <changeSet author="bartek" id="20231107_001_bartek_ride">
+        <createTable tableName="ride">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="ride_uuid" type="UUID">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="is_deleted" type="BOOLEAN" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="driver_node" type="VARCHAR(255)"/>
+            <column name="start_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_time" type="TIMESTAMP"/>
+            <column name="start_location" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_location" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="is_completed" type="BOOLEAN" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="customer_uuid" type="UUID"/>
+            <column name="driver_uuid" type="UUID"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

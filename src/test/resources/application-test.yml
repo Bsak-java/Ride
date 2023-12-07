@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:test
+    driverClassName: org.h2.Driver
+    username: user
+    password: password
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    open-in-view: false
+
+  h2:
+    console:
+      enabled: true
+
+  liquibase:
+    change-log: classpath:liquibase-ride-test-changelog.xml
+    enabled: true
+    drop-first: true
+
+  kafka:
+    bootstrap-server: localhost:9092
+
+  cloud:
+    discovery:
+      client:
+        simple:
+          instances:
+            customers-service:
+              - uri: http://localhost:8081
+            drivers-service:
+              - uri: http://localhost:8082
+
+eureka:
+  client:
+    enabled: false
